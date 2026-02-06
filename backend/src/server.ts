@@ -2,12 +2,12 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { initializeDatabase } from './database/init.js';
-import authRoutes from './routes/auth';
-import trainingPlansRoutes from './routes/trainingPlans';
-import studentsRoutes from './routes/students';
-import workoutsRoutes from './routes/workouts';
-import exercisesRoutes from './routes/exercises';
-import progressRoutes from './routes/progress';
+import authRoutes from './routes/auth.js';
+import trainingPlansRoutes from './routes/trainingPlans.js';
+import studentsRoutes from './routes/students.js';
+import workoutsRoutes from './routes/workouts.js';
+import exercisesRoutes from './routes/exercises.js';
+import progressRoutes from './routes/progress.js';
 
 dotenv.config();
 
