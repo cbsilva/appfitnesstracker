@@ -8,10 +8,16 @@ const isProduction = process.env.NODE_ENV === 'production';
 const pool = process.env.DATABASE_URL
   ? new Pool({
       connectionString: process.env.DATABASE_URL,
-      ssl: isProduction
-        ? { rejectUnauthorized: false }
-        : false,
-    })
+       ssl: { rejectUnauthorized: false }       
+
+
+       //family: 4, // 🔥 força IPv4
+       
+      //forcando o uso de IPv4 para evitar problemas de conexão em ambientes onde IPv6 pode causar erros, especialmente em produção      
+       // ssl: isProduction
+      //   ? { rejectUnauthorized: false }
+      //   : false,
+    } as any)
   : new Pool({
       user: process.env.DB_USER || 'postgres',
       password: process.env.DB_PASSWORD || 'password',
