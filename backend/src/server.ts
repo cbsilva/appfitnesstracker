@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { initializeDatabase } from './database/init';
+import { initializeDatabase } from './database/init.js';
 import authRoutes from './routes/auth';
 import trainingPlansRoutes from './routes/trainingPlans';
 import studentsRoutes from './routes/students';
