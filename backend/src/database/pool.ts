@@ -22,7 +22,7 @@ const pool = process.env.DATABASE_URL
       database: process.env.DB_NAME || 'fitness_tracker',
     });
 
-pool.on('error', (err) => {
+pool.on('error', (err: Error) => {
   console.error('Unexpected error on idle client', err);
 });
 
