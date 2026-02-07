@@ -1,4 +1,5 @@
 import pool from './pool.js';
+import bcrypt from 'bcrypt';
 
 export async function initializeDatabase() {
   try {
@@ -98,6 +99,28 @@ export async function initializeDatabase() {
     `);
 
     console.log('Database initialized successfully');
+
+    // Create default user if not exists
+    try {
+      const defaultEmail = process.env.DEFAULT_ADMIN_EMAIL || 'trainer@example.com';
+      const defaultPassword = process.env.DEFAULT_ADMIN_PASSWORD || 'Password123!';
+      const defaultName = process.env.DEFAULT_ADMIN_NAME || 'Admin Trainer';
+      const defaultRole = process.env.DEFAULT_ADMIN_ROLE || 'trainer';
+
+      const userCheck = await pool.query('SELECT id FROM users WHERE email = $1', [defaultEmail]);
+      if (userCheck.rows.length === 0) {
+        const hashed = await bcrypt.hash(defaultPassword, 10);
+        await pool.query(
+          'INSERT INTO users (email, password, name, role) VALUES ($1, $2, $3, $4)',
+          [defaultEmail, hashed, defaultName, defaultRole]
+        );
+        console.log(`Default user created: ${defaultEmail}`);
+      } else {
+        console.log(`Default user already exists: ${defaultEmail}`);
+      }
+    } catch (err) {
+      console.error('Error creating default user:', err);
+    }
   } catch (err) {
     console.error('Error initializing database:', err);
     throw err;
