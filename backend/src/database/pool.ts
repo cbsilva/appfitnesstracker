@@ -1,6 +1,3 @@
-import dns from 'dns';
-dns.setDefaultResultOrder('ipv4first');
-
 import { Pool } from 'pg';
 import dotenv from 'dotenv';
 
@@ -11,15 +8,12 @@ const isProduction = process.env.NODE_ENV === 'production';
 const pool = process.env.DATABASE_URL
   ? new Pool({
       connectionString: process.env.DATABASE_URL,
-       ssl: { rejectUnauthorized: false }       
-
-
-       //family: 4, // 🔥 força IPv4
-       
-      //forcando o uso de IPv4 para evitar problemas de conexão em ambientes onde IPv6 pode causar erros, especialmente em produção      
-       // ssl: isProduction
-      //   ? { rejectUnauthorized: false }
-      //   : false,
+       ssl: isProduction
+        ? { rejectUnauthorized: false },
+        max: 10,
+        idleTimeoutMillis: 30000,
+        connectionTimeoutMillis: 2000,
+        allowExitOnIdle: true        
     } as any)
   : new Pool({
       user: process.env.DB_USER || 'postgres',
