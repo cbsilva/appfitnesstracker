@@ -8,12 +8,13 @@ const isProduction = process.env.NODE_ENV === 'production';
 const pool = process.env.DATABASE_URL
   ? new Pool({
       connectionString: process.env.DATABASE_URL,
-       ssl: isProduction
-        ? { rejectUnauthorized: false },
-        max: 10,
-        idleTimeoutMillis: 30000,
-        connectionTimeoutMillis: 2000,
-        allowExitOnIdle: true,        
+      ssl: isProduction
+        ? { rejectUnauthorized: false }
+        : false,
+      max: 10,
+      idleTimeoutMillis: 30000,
+      connectionTimeoutMillis: 2000,
+      allowExitOnIdle: true,        
     } as any)
   : new Pool({
       user: process.env.DB_USER || 'postgres',
