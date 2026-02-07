@@ -13,7 +13,7 @@ const pool = process.env.DATABASE_URL
         max: 10,
         idleTimeoutMillis: 30000,
         connectionTimeoutMillis: 2000,
-        allowExitOnIdle: true        
+        allowExitOnIdle: true,        
     } as any)
   : new Pool({
       user: process.env.DB_USER || 'postgres',
