@@ -15,18 +15,67 @@
 
 .dashboard-header h1 {
   font-size: 1.8rem;
+  margin: 0;
 }
 
-.logout-btn {
+.header-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.logout-btn,
+.header-actions button {
   background-color: rgba(255, 255, 255, 0.2);
   color: white;
-  padding: 8px 16px;
+  padding: 10px 18px;
+  border: none;
   border-radius: 5px;
   font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
 }
 
-.logout-btn:hover {
+.logout-btn:hover,
+.header-actions button:hover {
   background-color: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+}
+
+.dashboard-nav {
+  background-color: white;
+  padding: 15px 30px;
+  display: flex;
+  gap: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  flex-wrap: wrap;
+}
+
+.nav-btn {
+  padding: 10px 20px;
+  border: 2px solid #ddd;
+  background-color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600;
+  color: #667eea;
+  transition: all 0.3s;
+}
+
+.nav-btn:hover {
+  background-color: #f5f5f5;
+  border-color: #667eea;
+}
+
+.nav-btn-primary {
+  background-color: #48bb78;
+  color: white;
+  border-color: #48bb78;
+}
+
+.nav-btn-primary:hover {
+  background-color: #38a169;
+  border-color: #38a169;
 }
 
 .dashboard-content {
@@ -38,23 +87,42 @@
 .plans-section h2 {
   margin-bottom: 20px;
   color: #333;
+  font-size: 1.3rem;
 }
 
 .btn-primary {
   background-color: #667eea;
   color: white;
   padding: 12px 24px;
+  border: none;
   margin-bottom: 20px;
   font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s;
 }
 
 .btn-primary:hover {
   background-color: #764ba2;
+  transform: scale(1.05);
+}
+
+.no-data {
+  background-color: white;
+  padding: 40px;
+  border-radius: 8px;
+  text-align: center;
+  color: #999;
+}
+
+.no-data p {
+  font-size: 1.1rem;
+  margin-bottom: 20px;
 }
 
 .plans-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 20px;
 }
 
@@ -65,6 +133,8 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   transition: transform 0.3s, box-shadow 0.3s;
+  display: flex;
+  flex-direction: column;
 }
 
 .plan-card:hover {
@@ -72,45 +142,115 @@
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
-.plan-card h3 {
+.plan-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.plan-header h3 {
   color: #667eea;
-  margin-bottom: 10px;
+  margin: 0;
+  font-size: 1.1rem;
 }
 
-.plan-card .modality {
-  color: #666;
-  font-size: 0.9rem;
-  margin-bottom: 10px;
-}
-
-.plan-card .status {
+.status-badge {
   display: inline-block;
-  padding: 5px 10px;
+  padding: 6px 12px;
   border-radius: 20px;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-weight: bold;
-  margin-bottom: 10px;
+  white-space: nowrap;
 }
 
-.plan-card .status[data-status="active"] {
+.status-badge[data-status="active"] {
   background-color: #c8e6c9;
   color: #2e7d32;
 }
 
-.plan-card .status[data-status="paused"] {
+.status-badge[data-status="paused"] {
   background-color: #fff9c4;
   color: #f57f17;
 }
 
-.plan-card .status[data-status="completed"] {
+.status-badge[data-status="completed"] {
   background-color: #e0e0e0;
   color: #424242;
 }
 
-.plan-card small {
-  display: block;
+.plan-description {
+  color: #666;
+  font-size: 0.95rem;
+  margin-bottom: 15px;
+  flex-grow: 1;
+  line-height: 1.4;
+}
+
+.plan-details {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.modality-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.modality-badge[data-modality="musculacao"] {
+  background-color: #fef3c7;
+  color: #b45309;
+}
+
+.modality-badge[data-modality="corrida"] {
+  background-color: #dbeafe;
+  color: #0c4a6e;
+}
+
+.modality-badge[data-modality="ambos"] {
+  background-color: #e9d5ff;
+  color: #6b21a8;
+}
+
+.frequency {
+  display: inline-block;
+  padding: 6px 12px;
+  background-color: #e2e8f0;
+  color: #2d3748;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.plan-dates {
+  margin-bottom: 15px;
+}
+
+.plan-dates small {
   color: #999;
   font-size: 0.85rem;
+}
+
+.plan-card .btn-secondary {
+  padding: 10px 16px;
+  background-color: #667eea;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s;
+  align-self: flex-start;
+}
+
+.plan-card .btn-secondary:hover {
+  background-color: #764ba2;
 }
 
 .loading {
@@ -122,9 +262,28 @@
   color: #667eea;
 }
 
-.no-data {
-  text-align: center;
-  padding: 40px;
-  color: #999;
-  font-size: 1.1rem;
-}
+@media (max-width: 768px) {
+  .dashboard-header {
+    flex-direction: column;
+    gap: 15px;
+    align-items: flex-start;
+  }
+
+  .dashboard-nav {
+    padding: 10px 15px;
+  }
+
+  .nav-btn {
+    flex: 1;
+    min-width: 150px;
+    padding: 10px 15px;
+    font-size: 0.85rem;
+  }
+
+  .plans-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .plan-header {
+    flex-direction: column;
+  }
