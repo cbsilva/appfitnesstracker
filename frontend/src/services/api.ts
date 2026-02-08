@@ -1,6 +1,17 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+const rawApiUrl = (import.meta as any).env?.VITE_API_URL;
+const mode = (import.meta as any).env?.MODE;
+let API_URL: string;
+
+if (rawApiUrl) {
+  API_URL = rawApiUrl;
+} else if (mode === 'production') {
+  API_URL = `${location.origin}/api`;
+  console.warn('VITE_API_URL not set — using', API_URL, 'Ensure VITE_API_URL is configured in your hosting provider.');
+} else {
+  API_URL = 'http://localhost:3001/api';
+}
 
 const api = axios.create({
   baseURL: API_URL,
