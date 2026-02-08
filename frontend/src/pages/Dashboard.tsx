@@ -1,14 +1,23 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { trainingService, TrainingPlan } from '../services/trainingService';
+import RegisterTrainer from '../components/RegisterTrainer';
 import '../styles/Dashboard.css';
 
 export default function Dashboard() {
   const [plans, setPlans] = useState<TrainingPlan[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showRegisterTrainer, setShowRegisterTrainer] = useState(false);
+  const [userRole, setUserRole] = useState<'trainer' | 'student' | null>(null);
+  const [successMessage, setSuccessMessage] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+      const user = JSON.parse(userStr);
+      setUserRole(user.role);
+    }
     fetchPlans();
   }, []);
 
@@ -29,6 +38,12 @@ export default function Dashboard() {
     navigate('/');
   };
 
+  const handleTrainerRegistered = () => {
+    setShowRegisterTrainer(false);
+    setSuccessMessage('✓ Novo treinador registrado com sucesso!');
+    setTimeout(() => setSuccessMessage(''), 3000);
+  };
+
   if (loading) return <div className="loading">Carregando...</div>;
 
   return (
@@ -36,6 +51,14 @@ export default function Dashboard() {
       <header className="dashboard-header">
         <h1>📊 Dashboard de Treinos</h1>
         <div className="header-actions">
+          {userRole === 'trainer' && (
+            <button 
+              className="btn-secondary" 
+              onClick={() => setShowRegisterTrainer(true)}
+            >
+              👨‍🏫 Registrar Treinador
+            </button>
+          )}
           <button className="logout-btn" onClick={handleLogout}>
             🚪 Sair
           </button>
@@ -122,6 +145,19 @@ export default function Dashboard() {
           )}
         </section>
       </main>
+
+      {successMessage && (
+        <div className="alert alert-success" style={{ position: 'fixed', bottom: 20, right: 20 }}>
+          {successMessage}
+        </div>
+      )}
+
+      {showRegisterTrainer && (
+        <RegisterTrainer
+          onClose={() => setShowRegisterTrainer(false)}
+          onSuccess={handleTrainerRegistered}
+        />
+      )}
     </div>
   );
 }

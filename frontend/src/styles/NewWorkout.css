@@ -1,9 +1,9 @@
-.training-plan-container {
+.new-workout-container {
   min-height: 100vh;
   background-color: #f5f5f5;
 }
 
-.training-plan-header {
+.new-workout-header {
   background-color: #667eea;
   color: white;
   padding: 20px 30px;
@@ -13,11 +13,48 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.training-plan-header h1 {
+.new-workout-header h1 {
   font-size: 1.8rem;
+  margin: 0;
 }
 
-.training-plan-form {
+.btn-secondary {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-secondary:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+}
+
+.alert {
+  margin: 20px 30px 0;
+  padding: 15px 20px;
+  border-radius: 5px;
+  font-weight: 500;
+}
+
+.alert-error {
+  background-color: #fed7d7;
+  color: #c53030;
+  border-left: 4px solid #c53030;
+}
+
+.alert-success {
+  background-color: #c6f6d5;
+  color: #22543d;
+  border-left: 4px solid #38a169;
+}
+
+.new-workout-form {
   max-width: 900px;
   margin: 30px auto;
   background: white;
@@ -79,11 +116,18 @@
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
-.form-group input:disabled,
-.form-group select:disabled {
-  background-color: #f5f5f5;
-  cursor: not-allowed;
-  opacity: 0.7;
+.info-box {
+  background-color: #e2e8f0;
+  padding: 15px 20px;
+  border-radius: 5px;
+  border-left: 4px solid #667eea;
+  margin-top: 15px;
+}
+
+.info-box p {
+  margin: 0;
+  color: #2d3748;
+  font-size: 0.95rem;
 }
 
 .form-actions {
@@ -94,103 +138,44 @@
 }
 
 .form-actions button {
-  padding: 10px 18px;
+  padding: 12px 24px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   transition: all 0.3s;
 }
 
-.form-actions .btn-primary {
+.btn-primary {
   background-color: #48bb78;
   color: white;
 }
 
-.form-actions .btn-primary:hover {
+.btn-primary:hover {
   background-color: #38a169;
-  transform: scale(1.03);
+  transform: scale(1.05);
 }
 
 .form-actions .btn-secondary {
   background-color: #cbd5e0;
   color: #2d3748;
+  padding: 12px 24px;
 }
 
 .form-actions .btn-secondary:hover {
   background-color: #a0aec0;
-}
-
-.form-actions .btn-danger {
-  background-color: #f56565;
-  color: white;
-}
-
-.form-actions .btn-danger:hover {
-  background-color: #e53e3e;
-}
-
-.training-plan-header .btn-secondary {
-  background-color: rgba(255, 255, 255, 0.2);
-  color: white;
-  padding: 10px 18px;
-  font-size: 0.9rem;
-}
-
-.training-plan-header .btn-secondary:hover {
-  background-color: rgba(255, 255, 255, 0.3);
-}
-
-.btn-secondary:hover {
-  background-color: #a0aec0;
-}
-
-.btn-danger {
-  background-color: #f56565;
-  color: white;
-}
-
-.btn-danger:hover {
-  background-color: #e53e3e;
-}
-
-.alert {
-  margin-bottom: 20px;
-  padding: 15px 20px;
-  border-radius: 5px;
-  font-weight: 500;
-}
-
-.alert-error {
-  background-color: #fed7d7;
-  color: #c53030;
-  border-left: 4px solid #c53030;
-}
-
-.alert-success {
-  background-color: #c6f6d5;
-  color: #22543d;
-  border-left: 4px solid #38a169;
-}
-
-.loading {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  font-size: 1.5rem;
-  color: #667eea;
+  transform: scale(1.03);
 }
 
 @media (max-width: 768px) {
-  .training-plan-header {
+  .new-workout-header {
     flex-direction: column;
     gap: 15px;
-    text-align: center;
+    align-items: flex-start;
   }
 
-  .training-plan-form {
+  .new-workout-form {
     margin: 20px;
     padding: 20px;
   }
