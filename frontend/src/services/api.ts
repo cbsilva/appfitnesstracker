@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-const rawApiUrl = import.meta.env.VITE_API_URL;
-const mode = import.meta.env.MODE;
+const rawApiUrl = (import.meta as any).env?.VITE_API_URL;
+const mode = (import.meta as any).env?.MODE;
 let API_URL: string;
 
 if (rawApiUrl) {
