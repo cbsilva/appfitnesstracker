@@ -6,7 +6,21 @@ const router = Router();
 
 router.post('/', authMiddleware, trainerOnly, async (req: AuthRequest, res: Response) => {
   try {
-    const { workout_id, name, series, repetitions, weight, duration_seconds, rest_seconds, notes, exercise_order } = req.body;
+    // accept multiple names from frontend: "reps" or "repetitions", "order" or "exercise_order"
+    const {
+      workout_id,
+      name,
+      series,
+      weight,
+      duration_seconds,
+      rest_seconds,
+      notes,
+      equipment_type,
+      muscle_group,
+    } = req.body;
+
+    const repetitions = req.body.repetitions ?? req.body.reps ?? null;
+    const exercise_order = req.body.exercise_order ?? req.body.order ?? 1;
 
     if (!workout_id || !name || !series) {
       return res.status(400).json({ error: 'Campos obrigatórios faltando' });
@@ -14,10 +28,10 @@ router.post('/', authMiddleware, trainerOnly, async (req: AuthRequest, res: Resp
 
     const result = await pool.query(
       `INSERT INTO exercises 
-       (workout_id, name, series, repetitions, weight, duration_seconds, rest_seconds, notes, exercise_order) 
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) 
+       (workout_id, name, series, repetitions, weight, duration_seconds, rest_seconds, notes, exercise_order, equipment_type, muscle_group) 
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) 
        RETURNING *`,
-      [workout_id, name, series, repetitions, weight, duration_seconds, rest_seconds, notes, exercise_order || 1]
+      [workout_id, name, series, repetitions, weight, duration_seconds, rest_seconds, notes, exercise_order, equipment_type || null, muscle_group || null]
     );
 
     res.status(201).json(result.rows[0]);
@@ -104,7 +118,11 @@ router.get('/:id', authMiddleware, async (req: AuthRequest, res: Response) => {
 router.put('/:id', authMiddleware, trainerOnly, async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
-    const { name, series, repetitions, weight, duration_seconds, rest_seconds, notes, exercise_order } = req.body;
+    const { name, series, weight, duration_seconds, rest_seconds, notes } = req.body;
+    const repetitions = req.body.repetitions ?? req.body.reps ?? null;
+    const exercise_order = req.body.exercise_order ?? req.body.order ?? null;
+    const equipment_type = req.body.equipment_type ?? null;
+    const muscle_group = req.body.muscle_group ?? null;
 
     const result = await pool.query(
       `UPDATE exercises 
@@ -116,10 +134,12 @@ router.put('/:id', authMiddleware, trainerOnly, async (req: AuthRequest, res: Re
            rest_seconds = COALESCE($6, rest_seconds),
            notes = COALESCE($7, notes),
            exercise_order = COALESCE($8, exercise_order),
+           equipment_type = COALESCE($9, equipment_type),
+           muscle_group = COALESCE($10, muscle_group),
            updated_at = CURRENT_TIMESTAMP
-       WHERE id = $9
+       WHERE id = $11
        RETURNING *`,
-      [name, series, repetitions, weight, duration_seconds, rest_seconds, notes, exercise_order, id]
+      [name, series, repetitions, weight, duration_seconds, rest_seconds, notes, exercise_order, equipment_type, muscle_group, id]
     );
 
     if (result.rows.length === 0) {

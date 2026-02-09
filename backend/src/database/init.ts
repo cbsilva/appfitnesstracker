@@ -66,6 +66,12 @@ export async function initializeDatabase() {
       );
     `);
 
+    // Ensure workouts.modality column exists (optional)
+    await pool.query(`
+      ALTER TABLE workouts
+      ADD COLUMN IF NOT EXISTS modality VARCHAR(50);
+    `);
+
     // Exercises table
     await pool.query(`
       CREATE TABLE IF NOT EXISTS exercises (
@@ -82,6 +88,13 @@ export async function initializeDatabase() {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
+    `);
+
+    // Ensure exercises has equipment_type and muscle_group columns
+    await pool.query(`
+      ALTER TABLE exercises
+      ADD COLUMN IF NOT EXISTS equipment_type VARCHAR(50),
+      ADD COLUMN IF NOT EXISTS muscle_group VARCHAR(50);
     `);
 
     // Progress tracking table

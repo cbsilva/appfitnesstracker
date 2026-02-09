@@ -10,14 +10,11 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
+    "noEmit": false,
     "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-    "outDir": "./dist",
-    "rootDir": "./src"
+    "composite": true,
+    "skipLibCheck": true
   },
-  "include": ["src"],
+  "include": ["vite.config.ts"],
   "exclude": ["node_modules"]
 }

@@ -1,4 +1,5 @@
 import { Router, Response } from 'express';
+import bcrypt from 'bcrypt';
 import pool from '../database/pool.js';
 import { authMiddleware, trainerOnly, AuthRequest } from '../middleware/auth.js';
 
@@ -6,13 +7,36 @@ const router = Router();
 
 router.post('/', authMiddleware, trainerOnly, async (req: AuthRequest, res: Response) => {
   try {
-    const { user_id, age, weight, height, gender, modality, medical_restrictions } = req.body;
+    const { email, name, password, age, weight, height, gender, modality, medical_restrictions } = req.body;
 
-    if (!user_id) {
-      return res.status(400).json({ error: 'user_id é obrigatório' });
+    // Validação
+    if (!email || !name || !password) {
+      return res.status(400).json({ error: 'Email, nome e senha são obrigatórios' });
     }
 
-    const result = await pool.query(
+    if (!modality) {
+      return res.status(400).json({ error: 'Modalidade é obrigatória' });
+    }
+
+    // Verificar se email já existe
+    const existingUser = await pool.query('SELECT id FROM users WHERE email = $1', [email]);
+    if (existingUser.rows.length > 0) {
+      return res.status(400).json({ error: 'Email já cadastrado' });
+    }
+
+    // Hash da senha
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Criar usuário
+    const userResult = await pool.query(
+      'INSERT INTO users (email, password, name, role) VALUES ($1, $2, $3, $4) RETURNING id',
+      [email, hashedPassword, name, 'student']
+    );
+
+    const user_id = userResult.rows[0].id;
+
+    // Criar student
+    const studentResult = await pool.query(
       `INSERT INTO students 
        (user_id, trainer_id, age, weight, height, gender, modality, medical_restrictions) 
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8) 
@@ -20,7 +44,7 @@ router.post('/', authMiddleware, trainerOnly, async (req: AuthRequest, res: Resp
       [user_id, req.user?.id, age, weight, height, gender, modality, medical_restrictions]
     );
 
-    res.status(201).json(result.rows[0]);
+    res.status(201).json(studentResult.rows[0]);
   } catch (err) {
     console.error('Create student error:', err);
     res.status(500).json({ error: 'Erro ao criar aluno' });
