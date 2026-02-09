@@ -7,6 +7,7 @@ export default function Students() {
   const [students, setStudents] = useState<Student[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
+  const [userRole, setUserRole] = useState<'trainer' | 'student' | null>(null);
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -25,6 +26,11 @@ export default function Students() {
   const [success, setSuccess] = useState('');
 
   useEffect(() => {
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+      const user = JSON.parse(userStr);
+      setUserRole(user.role);
+    }
     fetchStudents();
   }, []);
 
@@ -109,9 +115,11 @@ export default function Students() {
       <header className="students-header">
         <h1>Meus Alunos</h1>
         <div className="header-actions">
-          <button className="btn-primary" onClick={() => setShowForm(!showForm)}>
-            {showForm ? '✕ Cancelar' : '+ Novo Aluno'}
-          </button>
+          {userRole === 'trainer' && (
+            <button className="btn-primary" onClick={() => setShowForm(!showForm)}>
+              {showForm ? '✕ Cancelar' : '+ Novo Aluno'}
+            </button>
+          )}
           <button className="btn-secondary" onClick={() => navigate('/dashboard')}>
             ← Voltar ao Dashboard
           </button>
@@ -121,7 +129,7 @@ export default function Students() {
       {error && <div className="alert alert-error">{error}</div>}
       {success && <div className="alert alert-success">{success}</div>}
 
-      {showForm && (
+      {showForm && userRole === 'trainer' && (
         <div className="form-container">
           <h2>Adicionar Novo Aluno</h2>
           <form onSubmit={handleSubmit} className="student-form">
@@ -284,7 +292,7 @@ export default function Students() {
                 </div>
 
                 <p className="student-email">
-                  <strong>📧</strong> {student.email}
+                  <strong className="student-email-text">📧 {student.email}</strong>
                 </p>
 
                 {student.age && (
@@ -308,7 +316,7 @@ export default function Students() {
                 <div className="student-actions">
                   <button
                     className="btn-secondary"
-                    onClick={() => navigate(`/training-plan/student/${student.id}`)}
+                    onClick={() => navigate(`/students/${student.id}/plans`)}
                   >
                     Ver Planos
                   </button>

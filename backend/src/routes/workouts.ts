@@ -6,7 +6,7 @@ const router = Router();
 
 router.post('/', authMiddleware, trainerOnly, async (req: AuthRequest, res: Response) => {
   try {
-    const { training_plan_id, day_of_week, name, description, duration_minutes, difficulty } = req.body;
+    const { training_plan_id, day_of_week, name, description, duration_minutes, difficulty, modality } = req.body;
 
     if (!training_plan_id || !day_of_week || !name) {
       return res.status(400).json({ error: 'Campos obrigatórios faltando' });
@@ -14,10 +14,10 @@ router.post('/', authMiddleware, trainerOnly, async (req: AuthRequest, res: Resp
 
     const result = await pool.query(
       `INSERT INTO workouts 
-       (training_plan_id, day_of_week, name, description, duration_minutes, difficulty) 
-       VALUES ($1, $2, $3, $4, $5, $6) 
+       (training_plan_id, day_of_week, name, description, duration_minutes, difficulty, modality) 
+       VALUES ($1, $2, $3, $4, $5, $6, $7) 
        RETURNING *`,
-      [training_plan_id, day_of_week, name, description, duration_minutes, difficulty]
+      [training_plan_id, day_of_week, name, description, duration_minutes, difficulty, modality || null]
     );
 
     res.status(201).json(result.rows[0]);
@@ -101,7 +101,7 @@ router.get('/:id', authMiddleware, async (req: AuthRequest, res: Response) => {
 router.put('/:id', authMiddleware, trainerOnly, async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
-    const { name, description, duration_minutes, difficulty } = req.body;
+    const { name, description, duration_minutes, difficulty, modality } = req.body;
 
     const result = await pool.query(
       `UPDATE workouts 
@@ -109,10 +109,11 @@ router.put('/:id', authMiddleware, trainerOnly, async (req: AuthRequest, res: Re
            description = COALESCE($2, description),
            duration_minutes = COALESCE($3, duration_minutes),
            difficulty = COALESCE($4, difficulty),
+           modality = COALESCE($5, modality),
            updated_at = CURRENT_TIMESTAMP
-       WHERE id = $5
+       WHERE id = $6
        RETURNING *`,
-      [name, description, duration_minutes, difficulty, id]
+      [name, description, duration_minutes, difficulty, modality, id]
     );
 
     if (result.rows.length === 0) {

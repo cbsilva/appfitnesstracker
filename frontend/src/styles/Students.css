@@ -25,7 +25,7 @@
 .btn-primary,
 .btn-secondary,
 .btn-danger {
-  padding: 10px 20px;
+  padding: 10px 18px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -145,7 +145,7 @@
 }
 
 .form-actions button {
-  padding: 12px 24px;
+  padding: 10px 18px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -222,7 +222,18 @@
   color: #6b21a8;
 }
 
-.student-email,
+.student-email {
+  color: #000;
+  margin: 8px 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.student-email-text {
+  color: #000;
+  font-weight: 700;
+}
+
 .student-info {
   color: #666;
   margin: 8px 0;
@@ -248,7 +259,7 @@
 .student-actions button {
   flex: 1;
   min-width: 120px;
-  padding: 8px 12px;
+  padding: 10px 18px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
