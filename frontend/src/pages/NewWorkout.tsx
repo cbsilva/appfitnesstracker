@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import BackButtons from '../components/BackButtons';
 import { workoutService } from '../services/workoutService';
 import { trainingService, TrainingPlan } from '../services/trainingService';
 import '../styles/NewWorkout.css';
@@ -105,9 +106,7 @@ export default function NewWorkout() {
     <div className="new-workout-container">
       <header className="new-workout-header">
         <h1>Novo Treino</h1>
-        <button className="btn-secondary" onClick={() => navigate(-1)}>
-          ← Voltar
-        </button>
+        <BackButtons />
       </header>
 
       {error && <div className="alert alert-error">{error}</div>}

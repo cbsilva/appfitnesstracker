@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { trainingService, TrainingPlan } from '../services/trainingService';
 import { studentService, Student } from '../services/studentService';
+import BackButtons from '../components/BackButtons';
 import '../styles/StudentPlans.css';
 
 export default function StudentPlans() {
@@ -41,9 +42,7 @@ export default function StudentPlans() {
           <h1>Planos de {student?.name}</h1>
           <p className="student-email">📧 {student?.email}</p>
         </div>
-        <button className="btn-secondary" onClick={() => navigate('/students')}>
-          ← Voltar
-        </button>
+        <BackButtons backTo="/students" />
       </header>
 
       <main className="student-plans-content">

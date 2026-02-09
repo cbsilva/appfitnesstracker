@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import BackButtons from '../components/BackButtons';
 import { progressService, ProgressLog } from '../services/progressService';
 import { studentService, Student } from '../services/studentService';
 import '../styles/Progress.css';
 
 export default function Progress() {
   const { studentId } = useParams<{ studentId: string }>();
-  const navigate = useNavigate();
   const [student, setStudent] = useState<Student | null>(null);
   const [progressLogs, setProgressLogs] = useState<ProgressLog[]>([]);
   const [loading, setLoading] = useState(true);
@@ -28,7 +28,7 @@ export default function Progress() {
     try {
       if (!studentId) return;
       const id = parseInt(studentId);
-      const studentData = await studentService.getStudent(id);
+      const studentData = await studentService.getStudentById(id);
       setStudent(studentData);
       const progressData = await progressService.getProgressByStudent(id);
       setProgressLogs(progressData.sort((a, b) => new Date(b.workout_date).getTime() - new Date(a.workout_date).getTime()));
@@ -125,9 +125,7 @@ export default function Progress() {
           <h1>Progresso de {student?.name || 'Aluno'}</h1>
           <p className="subtitle">Acompanhe a evolução do treino</p>
         </div>
-        <button className="btn-secondary" onClick={() => navigate(-1)}>
-          ← Voltar
-        </button>
+        <BackButtons />
       </header>
 
       {error && <div className="alert alert-error">{error}</div>}

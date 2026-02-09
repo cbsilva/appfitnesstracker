@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import BackButtons from '../components/BackButtons';
 import { workoutService, Workout } from '../services/workoutService';
 import { exerciseService, Exercise } from '../services/exerciseService';
 import '../styles/Exercises.css';
 
 export default function Exercises() {
   const { workoutId } = useParams<{ workoutId: string }>();
-  const navigate = useNavigate();
   const [workout, setWorkout] = useState<Workout | null>(null);
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [loading, setLoading] = useState(true);
@@ -24,6 +24,9 @@ export default function Exercises() {
     notes: '',
     equipment_type: 'barra',
     muscle_group: 'superiores',
+    distance_km: '',
+    pace: '',
+    intensity: 'moderada',
   });
 
   useEffect(() => {
@@ -55,8 +58,8 @@ export default function Exercises() {
     setFormData((prev) => ({
       ...prev,
       [name]:
-        name === 'series' || name === 'reps' || name === 'rest_seconds' || name === 'duration_seconds'
-          ? parseInt(value) || 0
+        name === 'series' || name === 'reps' || name === 'rest_seconds' || name === 'duration_seconds' || name === 'distance_km'
+          ? (value === '' ? '' : Number(value))
           : value,
     }));
   };
@@ -79,15 +82,28 @@ export default function Exercises() {
     }
 
     try {
+      // If this is a running exercise, compose structured notes with distance/pace/intensity
+      let composedNotes = formData.notes || '';
+      if (workout?.modality === 'corrida') {
+        const parts = [
+          formData.distance_km ? `Distância: ${formData.distance_km} km` : undefined,
+          formData.duration_seconds ? `Duração: ${formData.duration_seconds}s` : undefined,
+          formData.pace ? `Ritmo: ${formData.pace}` : undefined,
+          formData.intensity ? `Intensidade: ${formData.intensity}` : undefined,
+          formData.notes ? `Observação: ${formData.notes}` : undefined,
+        ].filter(Boolean);
+        composedNotes = parts.join('\n');
+      }
+
       const newExercise = await exerciseService.createExercise({
         workout_id: parseInt(workoutId),
         name: formData.name,
-        series: formData.series,
+        series: workout?.modality === 'corrida' ? 1 : formData.series,
         reps: formData.reps || undefined,
         weight: formData.weight ? parseFloat(formData.weight) : undefined,
-        duration_seconds: formData.duration_seconds || undefined,
+        duration_seconds: formData.duration_seconds ? Number(formData.duration_seconds) : undefined,
         rest_seconds: formData.rest_seconds,
-        notes: formData.notes || undefined,
+        notes: composedNotes || undefined,
         equipment_type: formData.equipment_type,
         muscle_group: formData.muscle_group,
         order: exercises.length + 1,
@@ -105,6 +121,9 @@ export default function Exercises() {
         notes: '',
         equipment_type: 'barra',
         muscle_group: 'superiores',
+        distance_km: '',
+        pace: '',
+        intensity: 'moderada',
       });
       setShowForm(false);
       setTimeout(() => setSuccess(''), 3000);
@@ -153,9 +172,7 @@ export default function Exercises() {
             {workout?.difficulty && ` ${workout.difficulty}`}
           </p>
         </div>
-        <button className="btn-secondary" onClick={() => navigate(-1)}>
-          ← Voltar
-        </button>
+        <BackButtons />
       </header>
 
       {error && <div className="alert alert-error">{error}</div>}
@@ -191,19 +208,21 @@ export default function Exercises() {
                     />
                   </div>
 
-                  <div className="form-group">
-                    <label htmlFor="series">Séries *</label>
-                    <input
-                      type="number"
-                      id="series"
-                      name="series"
-                      value={formData.series}
-                      onChange={handleInputChange}
-                      required
-                      min="1"
-                      max="10"
-                    />
-                  </div>
+                  {workout?.modality !== 'corrida' && (
+                    <div className="form-group">
+                      <label htmlFor="series">Séries *</label>
+                      <input
+                        type="number"
+                        id="series"
+                        name="series"
+                        value={formData.series}
+                        onChange={handleInputChange}
+                        required
+                        min="1"
+                        max="10"
+                      />
+                    </div>
+                  )}
                 </div>
 
                 {workout?.modality === 'musculacao' && (
@@ -289,34 +308,61 @@ export default function Exercises() {
                 )}
 
                 {workout?.modality === 'corrida' && (
-                  <div className="form-row">
-                    <div className="form-group">
-                      <label htmlFor="duration_seconds">Duração (segundos)</label>
-                      <input
-                        type="number"
-                        id="duration_seconds"
-                        name="duration_seconds"
-                        value={formData.duration_seconds}
-                        onChange={handleInputChange}
-                        min="1"
-                        placeholder="Ex: 300 (5 minutos)"
-                      />
+                  <>
+                    <div className="form-row">
+                      <div className="form-group">
+                        <label htmlFor="distance_km">Distância (km)</label>
+                        <input
+                          type="number"
+                          id="distance_km"
+                          name="distance_km"
+                          value={formData.distance_km}
+                          onChange={handleInputChange}
+                          step="0.01"
+                          min="0"
+                          placeholder="Ex: 5"
+                        />
+                      </div>
+
+                      <div className="form-group">
+                        <label htmlFor="duration_seconds">Duração (segundos)</label>
+                        <input
+                          type="number"
+                          id="duration_seconds"
+                          name="duration_seconds"
+                          value={formData.duration_seconds}
+                          onChange={handleInputChange}
+                          min="1"
+                          placeholder="Ex: 1500 (25 minutos)"
+                        />
+                      </div>
                     </div>
 
-                    <div className="form-group">
-                      <label htmlFor="rest_seconds">Descanso (segundos)</label>
-                      <input
-                        type="number"
-                        id="rest_seconds"
-                        name="rest_seconds"
-                        value={formData.rest_seconds}
-                        onChange={handleInputChange}
-                        required
-                        min="10"
-                        placeholder="Ex: 60"
-                      />
+                    <div className="form-row">
+                      <div className="form-group">
+                        <label htmlFor="pace">Ritmo</label>
+                        <input
+                          type="text"
+                          id="pace"
+                          name="pace"
+                          value={formData.pace}
+                          onChange={handleInputChange}
+                          placeholder="Ex: 5:00 min/km"
+                        />
+                      </div>
+
+                      <div className="form-group">
+                        <label htmlFor="intensity">Intensidade</label>
+                        <select id="intensity" name="intensity" value={formData.intensity} onChange={handleInputChange}>
+                          <option value="leve">Leve</option>
+                          <option value="moderada">Moderada</option>
+                          <option value="forte">Forte</option>
+                          <option value="sprint">Sprint</option>
+                          <option value="intervalo">Intervalo</option>
+                        </select>
+                      </div>
                     </div>
-                  </div>
+                  </>
                 )}
 
                 <div className="form-group">

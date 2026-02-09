@@ -19,6 +19,11 @@ export const trainingService = {
     return response.data;
   },
 
+  getPlan: async (id: number): Promise<TrainingPlan> => {
+    const response = await api.get(`/training-plans/${id}`);
+    return response.data;
+  },
+
   getPlanById: async (id: number): Promise<TrainingPlan> => {
     const response = await api.get(`/training-plans/${id}`);
     return response.data;

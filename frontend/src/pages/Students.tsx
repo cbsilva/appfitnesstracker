@@ -292,7 +292,7 @@ export default function Students() {
                 </div>
 
                 <p className="student-email">
-                  <strong>📧</strong> {student.email}
+                  <strong className="student-email-text">📧 {student.email}</strong>
                 </p>
 
                 {student.age && (

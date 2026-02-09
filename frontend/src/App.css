@@ -1,15 +1,62 @@
 /* Minimal app styles to satisfy import in App.tsx */
+:root{
+  --bg: #f5f7fb;
+  --card-bg: #ffffff;
+  --primary: #667eea;
+  --accent: #48bb78;
+  --muted: #6b7280;
+  --danger: #f56565;
+  --radius: 10px;
+  --shadow: 0 6px 18px rgba(16,24,40,0.08);
+  --container-max: 1200px;
+}
+
 html, body, #root {
   height: 100%;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  background: var(--bg);
+  color: #1f2937;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
-}
+a { color: inherit; text-decoration: none; }
 
 .app-container {
-  padding: 16px;
+  padding: 20px;
+  max-width: var(--container-max);
+  margin: 0 auto;
+}
+
+/* Buttons (consistent look) */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  transition: transform .12s ease, box-shadow .12s ease, opacity .12s;
+}
+.btn:active{ transform: translateY(1px); }
+.btn:disabled{ opacity: .6; cursor: not-allowed; }
+.btn-primary{ background: linear-gradient(90deg,var(--primary), #5a67d8); color: white; box-shadow: 0 6px 18px rgba(99,102,241,0.12); }
+.btn-secondary{ background: rgba(255,255,255,0.08); color: white; border: 1px solid rgba(255,255,255,0.06); }
+.btn-accent{ background: var(--accent); color:white; }
+.btn-danger{ background: var(--danger); color: white; }
+
+/* Generic card */
+.card{
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 18px;
+}
+
+/* Utility */
+.muted{ color: var(--muted); }
+
+@media (max-width: 768px){
+  .app-container{ padding: 12px; }
 }

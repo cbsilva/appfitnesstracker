@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { trainingService, TrainingPlan as TrainingPlanType } from '../services/trainingService';
 import { studentService, Student } from '../services/studentService';
+import BackButtons from '../components/BackButtons';
 import '../styles/TrainingPlan.css';
 
 export default function TrainingPlan() {
@@ -50,8 +51,8 @@ export default function TrainingPlan() {
         student_id: data.student_id.toString(),
         title: data.title,
         description: data.description,
-        start_date: data.start_date,
-        end_date: data.end_date,
+        start_date: new Date(data.start_date).toISOString().split('T')[0],
+        end_date: data.end_date ? new Date(data.end_date).toISOString().split('T')[0] : '',
         modality: data.modality,
         frequency: data.frequency,
         status: data.status,
@@ -126,9 +127,7 @@ export default function TrainingPlan() {
     <div className="training-plan-container">
       <header className="training-plan-header">
         <h1>{isNew ? 'Novo Plano de Treino' : 'Editar Plano de Treino'}</h1>
-        <button className="btn-secondary" onClick={() => navigate('/dashboard')}>
-          ← Voltar
-        </button>
+        <BackButtons />
       </header>
 
       {error && <div className="alert alert-error">{error}</div>}
@@ -278,7 +277,7 @@ export default function TrainingPlan() {
               <button
                 type="button"
                 className="btn-secondary"
-                onClick={() => navigate(`/training-plan/${id}/workouts`)}
+                onClick={() => navigate(`/workouts/${id}`)}
               >
                 📋 Gerenciar Treinos
               </button>
